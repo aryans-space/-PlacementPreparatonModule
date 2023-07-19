@@ -1,0 +1,158 @@
+1)Rotate Image
+class Solution {
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        
+        //Column Reverse
+        for(int i = 0; i < n; i++){
+            int a = 0;
+            int b = n-1;
+            while(a <= b){
+               int temp = matrix[a][i];
+                matrix[a][i] = matrix[b][i];
+                 matrix[b][i] = temp;
+                 a++;
+                 b--;
+            }
+            
+        }
+           
+        //Transpose
+        for(int i = 0; i < n; i++){
+            for(int j =i+1; j< n; j++){
+                int temp =  matrix[i][j];
+                 matrix[i][j] =  matrix[j][i];;
+                 matrix[j][i] = temp;
+            }
+        }
+        
+    }
+}
+
+2)Merge Overlapping Subintervals
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+        List<int[]> ans = new ArrayList<>();
+        
+        for (int[] interval : intervals) {
+            if (ans.isEmpty() || interval[0] > ans.get(ans.size() - 1)[1]) {
+                ans.add(interval);
+            } else {
+                ans.get(ans.size() - 1)[1] = Math.max(interval[1], ans.get(ans.size() - 1)[1]);
+            }
+        }
+        
+        return ans.toArray(new int[ans.size()][]);
+    }
+}
+
+3)Merge two sorted arrays without extra spac…
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int len = nums1.length -1;
+  
+    int i = m-1, j = n-1;
+    while(i>=0 && j>=0 && i < m && j < n){
+        
+        if(nums1[i] >= nums2[j]){
+            nums1[len--] = nums1[i--];
+        }else{
+            nums1[len--] = nums2[j--];
+        }
+    }
+    
+    while(i>=0 && i< m){
+        nums1[len--] = nums1[i--];
+    }
+    
+    while(j>=0 && j< n){
+        nums1[len--] = nums2[j--];
+    }
+    return;
+    }
+}
+
+4)Find the duplicate in an array of N+1 inte…
+class Solution {
+    public int findDuplicate(int[] A) {
+        
+     int slow = A[0], fast = A[0];
+        do{
+            slow = A[slow];
+            fast = A[A[fast]];
+        }while(slow != fast);
+        fast = A[0];
+        while(slow != fast){
+            slow = A[slow];
+            fast = A[fast];
+        }
+        return slow;
+    }
+}
+
+5)Repeat and Missing Number
+public class Solution {
+    // DO NOT MODIFY THE LIST. IT IS READ ONLY
+    public ArrayList<Integer> repeatedNumber(final List<Integer> A) {
+        ArrayList<Integer> ans = new ArrayList<>();
+       
+        Map<Integer, Integer> map = new HashMap<>();
+       
+        int dupli = -1;
+        int originalSum = 0;
+        int arraySum = 0;
+       
+        for(int i=1; i<=A.size(); i++) originalSum+=i;
+        for(int i=0; i<A.size(); i++) arraySum+=A.get(i);
+       
+        for(int i=0; i<A.size(); i++){
+        if(map.containsKey(A.get(i))){
+            dupli = A.get(i);
+            break;
+        }else{
+            map.put(A.get(i), 1);
+        }
+        }
+       
+        int resSum = arraySum - dupli;
+       
+        int misNum = originalSum - resSum;
+       
+        ans.add(dupli);
+        ans.add(misNum);
+       
+        return ans;
+    }
+}
+
+6)Inversion of Array (Pre-req: Merge Sort)
+public static long getInversions(long arr[], int n) {
+
+        // Write your code here.
+
+        long count = 0;
+
+        for(int i = 0; i < arr.length; i++)
+
+        {
+
+            for(int j = i; j < arr.length; j++)
+
+            {
+
+                if(arr[i] > arr[j])
+
+                {
+
+                    count++;
+
+                }
+
+            }
+
+        }
+
+        return count;
+
+    }
