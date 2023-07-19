@@ -1,0 +1,205 @@
+1)Max heap, Min Heap Implementation (Only fo…
+import java.util.* ;
+import java.io.*;
+public class Solution {
+   // minHeap function which take size of Queries and Queries as Input.
+// Returns an array out outputs depending on the query.
+   static int[] minHeap(int n, int[][] q) {
+       // Write your code here.
+       int cnt =0;
+       for(int i=0;i<q.length;i+=1){
+           if(q[i][0]==1)
+               cnt+=1;
+       }
+       int res[] = new int[cnt];
+       int i=0;
+       PriorityQueue<Integer> pq = new PriorityQueue<>();
+       for(int a[]:q){
+           if(a[0]==0){
+               pq.offer(a[1]);
+           }
+           if(a[0]==1){
+               res[i]= pq.poll();
+               i+=1;
+           }
+       }
+       return res;
+   }
+}
+
+2)	Kth Largest Element
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> minheap=new PriorityQueue<>();
+        
+        for(int i=0;i<nums.length;i++){
+            minheap.add(nums[i]);
+            if(minheap.size()>k)
+                minheap.poll();
+        }
+        
+        return minheap.peek();
+    }
+}
+
+3)Maximum Sum Combination
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Solution {
+    public static int[] findMedian(int[] arr, int n) {
+
+        // To store the incoming stream elements
+        ArrayList<Integer> store = new ArrayList<Integer>();
+
+        // To store the medians
+        int[] medians = new int[n];
+
+        for (int i = 0; i < n; i++) {
+
+            // Storing the incoming data from stream in a vector 'store'
+            store.add(arr[i]);
+
+            // Sorting the vector to arrange all the elements in sorted order
+            Collections.sort(store);
+
+            int median;
+            // Even number of elements are read, (Note - 0 based indexing is used)
+            if ((i + 1) % 2 == 0) {
+
+                // Average of middle two values
+                median = (store.get(i / 2) + store.get((i + 1) / 2)) / 2;
+
+            }
+            // odd number of elements are read
+            else {
+
+                // The middle value of the sorted arrangement of the elements read so far
+                median = store.get(i / 2);
+
+            }
+
+            medians[i] = (median);
+
+        }
+
+        return medians;
+    }
+}
+
+4)Find Median from Data Stream
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Solution {
+    public static int[] findMedian(int[] arr, int n) {
+
+        // To store the incoming stream elements
+        ArrayList<Integer> store = new ArrayList<Integer>();
+
+        // To store the medians
+        int[] medians = new int[n];
+
+        for (int i = 0; i < n; i++) {
+
+            // Storing the incoming data from stream in a vector 'store'
+            store.add(arr[i]);
+
+            // Sorting the vector to arrange all the elements in sorted order
+            Collections.sort(store);
+
+            int median;
+            // Even number of elements are read, (Note - 0 based indexing is used)
+            if ((i + 1) % 2 == 0) {
+
+                // Average of middle two values
+                median = (store.get(i / 2) + store.get((i + 1) / 2)) / 2;
+
+            }
+            // odd number of elements are read
+            else {
+
+                // The middle value of the sorted arrangement of the elements read so far
+                median = store.get(i / 2);
+
+            }
+
+            medians[i] = (median);
+
+        }
+
+        return medians;
+    }
+}
+
+5)Merge K sorted arrays
+import java.util.* ;
+
+import java.io.*; 
+
+import java.util.ArrayList;
+
+public class Solution 
+
+{
+
+    public static ArrayList<Integer> mergeKSortedArrays(ArrayList<ArrayList<Integer>> kArrays, int k)
+
+    {
+
+        // Write your code here.
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        ArrayList<Integer> al = new ArrayList<>();
+
+        for(int i=0;i<k;i++){
+
+            for(int j : kArrays.get(i)){
+
+                pq.add(j);
+
+            }
+
+        }
+
+        int i=0;
+
+        while(!pq.isEmpty()){
+
+            al.add(pq.poll());
+
+        }
+
+        return al;
+
+    }
+
+}
+
+6)K most frequent elements
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+         PriorityQueue<Pair<Integer,Integer>> pq=new PriorityQueue<>((a,b)-> a.getKey()-b.getKey());
+        
+        HashMap<Integer,Integer> map=new HashMap<>();
+        
+        for(int i=0;i<nums.length;i++){
+            map.put(nums[i],map.getOrDefault(nums[i], 0)+1);
+        }
+        
+        for(Map.Entry<Integer,Integer> e:map.entrySet()){
+            
+            pq.add(new Pair<>(e.getValue(),e.getKey()));
+            if(pq.size()>k)
+                pq.poll();
+        }
+        int[] ans=new int[k];
+        int i=0;
+        while(!pq.isEmpty()){
+            ans[i++]=pq.poll().getValue();
+        }
+        
+        return ans;
+    }
+}
