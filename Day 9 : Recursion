@@ -1,0 +1,246 @@
+1)Subset Sums
+import java.util.*;
+class TUF {
+    static void subsetSumsHelper(int ind, int sum, ArrayList < Integer > arr, int N, ArrayList < Integer > sumSubset) {
+        if (ind == N) {
+            sumSubset.add(sum);
+            return;
+        }
+
+        // pick the element 
+        subsetSumsHelper(ind + 1, sum + arr.get(ind), arr, N, sumSubset);
+
+        // Do-not pick the element
+        subsetSumsHelper(ind + 1, sum, arr, N, sumSubset);
+    }
+
+    static ArrayList < Integer > subsetSums(ArrayList < Integer > arr, int N) {
+
+        ArrayList < Integer > sumSubset = new ArrayList < > ();
+        subsetSumsHelper(0, 0, arr, N, sumSubset);
+        Collections.sort(sumSubset);
+        return sumSubset;
+    }
+
+
+
+    public static void main(String args[]) {
+
+
+        ArrayList < Integer > arr = new ArrayList < > ();
+        arr.add(3);
+        arr.add(1);
+        arr.add(2);
+        ArrayList < Integer > ans = subsetSums(arr, arr.size());
+        Collections.sort(ans);
+        System.out.println("The sum of each subset is ");
+        for (int i = 0; i < ans.size(); i++)
+            System.out.print(ans.get(i) + " ");
+    }
+
+}
+
+2)Subset-II
+import java.util.*;
+class TUF {
+    static void printAns(List < String > ans) {
+        System.out.println("The unique subsets are ");
+        System.out.println(ans.toString().replace(",", " "));
+    }
+    public static void fun(int[] nums, int index, List < Integer > ds, HashSet < String > res) {
+        if (index == nums.length) {
+            Collections.sort(ds);
+            res.add(ds.toString());
+            return;
+        }
+        ds.add(nums[index]);
+        fun(nums, index + 1, ds, res);
+        ds.remove(ds.size() - 1);
+        fun(nums, index + 1, ds, res);
+    }
+    public static List < String > subsetsWithDup(int[] nums) {
+        List < String > ans = new ArrayList < > ();
+        HashSet < String > res = new HashSet < > ();
+        List < Integer > ds = new ArrayList < > ();
+        fun(nums, 0, ds, res);
+        for (String it: res) {
+            ans.add(it);
+        }
+        return ans;
+    }
+
+    public static void main(String args[]) {
+        int nums[]={1,2,2};
+        List < String > ans = subsetsWithDup(nums);
+        printAns(ans);
+
+    }
+
+}
+
+3)Combination sum-1
+import java.io.*;
+import java.util.*;
+class Solution {
+
+    private void findCombinations(int ind, int[] arr, int target, List < List < Integer >> ans, List < Integer > ds) {
+        if (ind == arr.length) {
+            if (target == 0) {
+                ans.add(new ArrayList < > (ds));
+            }
+            return;
+        }
+
+        if (arr[ind] <= target) {
+            ds.add(arr[ind]);
+            findCombinations(ind, arr, target - arr[ind], ans, ds);
+            ds.remove(ds.size() - 1);
+        }
+        findCombinations(ind + 1, arr, target, ans, ds);
+    }
+    public List < List < Integer >> combinationSum(int[] candidates, int target) {
+        List < List < Integer >> ans = new ArrayList < > ();
+        findCombinations(0, candidates, target, ans, new ArrayList < > ());
+        return ans;
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        int arr[] = {2,3,6,7};
+        int target = 7;
+        Solution sol = new Solution();
+        List < List < Integer >> ls = sol.combinationSum(arr, target);
+        System.out.println("Combinations are: ");
+        for (int i = 0; i < ls.size(); i++) {
+            for (int j = 0; j < ls.get(i).size(); j++) {
+                System.out.print(ls.get(i).get(j) + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+4)Combination sum-2
+import java.util.*;
+class TUF {
+    static void findCombinations(int ind, int[] arr, int target, List < List < Integer >> ans, List < Integer > ds) {
+        if (target == 0) {
+            ans.add(new ArrayList < > (ds));
+            return;
+        }
+
+        for (int i = ind; i < arr.length; i++) {
+            if (i > ind && arr[i] == arr[i - 1]) continue;
+            if (arr[i] > target) break;
+
+            ds.add(arr[i]);
+            findCombinations(i + 1, arr, target - arr[i], ans, ds);
+            ds.remove(ds.size() - 1);
+        }
+    }
+    public static List < List < Integer >> combinationSum2(int[] candidates, int target) {
+        List < List < Integer >> ans = new ArrayList < > ();
+        Arrays.sort(candidates);
+        findCombinations(0, candidates, target, ans, new ArrayList < > ());
+        return ans;
+    }
+
+    public static void main(String args[]) {
+        int v[]={10,1,2,7,6,1,5};
+        List < List < Integer >> comb = combinationSum2(v, 8);
+        System.out.println(comb.toString().replace(",", " "));
+    }
+}
+
+5)Palindrome Partitioning
+import java.util.*;
+class TUF {
+    public static List < List < String >> partition(String s) {
+        List < List < String >> res = new ArrayList < > ();
+        List < String > path = new ArrayList < > ();
+        partitionHelper(0, s, path, res);
+        return res;
+    }
+
+    static void partitionHelper(int index, String s, List < String > path, List < List < String >> res) {
+        if (index == s.length()) {
+            res.add(new ArrayList < > (path));
+            return;
+        }
+        for (int i = index; i < s.length(); ++i) {
+            if (isPalindrome(s, index, i)) {
+                path.add(s.substring(index, i + 1));
+                partitionHelper(i + 1, s, path, res);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+
+    static boolean isPalindrome(String s, int start, int end) {
+        while (start <= end) {
+            if (s.charAt(start++) != s.charAt(end--))
+                return false;
+        }
+        return true;
+    }
+
+    public static void main(String args[]) {
+        String s = "aabb";
+        List < List < String >> ans = partition(s);
+        int n = ans.size();
+        System.out.println("The Palindromic partitions are :-");
+        System.out.print(" [ ");
+        for (int i = 0; i < ans.size(); i++) {
+            System.out.print("[ ");
+            for (int j = 0; j < ans.get(i).size(); j++) {
+                System.out.print(ans.get(i).get(j) + " ");
+            }
+            System.out.print("] ");
+        }
+        System.out.print("]");
+
+
+    }
+
+}
+
+6)	K-th permutation Sequence
+import java.util.*;
+public class Main {
+    static void swap(char s[], int i, int j) {
+        char ch = s[i];
+        s[i] = s[j];
+        s[j] = ch;
+    }
+    static void permutationHelper(char s[], int index, ArrayList < String > res) {
+        if (index == s.length) {
+            String str = new String(s);
+
+            res.add(str);
+            return;
+        }
+        for (int i = index; i < s.length; i++) {
+            swap(s, i, index);
+            permutationHelper(s, index + 1, res);
+            swap(s, i, index);
+        }
+    }
+
+    static String getPermutation(int n, int k) {
+        String s = "";
+        ArrayList < String > res = new ArrayList < > ();
+        for (int i = 1; i <= n; i++) {
+            s += i;
+        }
+        permutationHelper(s.toCharArray(), 0, res);
+        Collections.sort(res);
+
+        return res.get(k);
+
+    }
+    public static void main(String args[]) {
+        int n = 3, k = 3;
+        String ans = getPermutation(n, k);
+        System.out.println("The Kth permutation sequence is " + ans);
+    }
+}
