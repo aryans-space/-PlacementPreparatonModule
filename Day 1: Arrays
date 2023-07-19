@@ -1,0 +1,168 @@
+1)Set Matrix Zeroes
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        
+        List<Integer> rows=new ArrayList<Integer>();
+        List<Integer> col=new ArrayList<Integer>();
+        
+        for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+                if(matrix[i][j]==0)
+                {
+                    rows.add(i);
+                    col.add(j);
+                }
+            }
+        }
+        
+        for(int i=0;i<rows.size();i++){
+            for(int j=0;j<matrix[0].length;j++){
+                matrix[rows.get(i)][j]=0;
+            }
+        }
+        
+        for(int j=0;j<col.size();j++){
+            for(int i=0;i<matrix.length;i++){
+                matrix[i][col.get(j)]=0;
+            }
+        }
+        
+    }
+}
+
+2)Pascal's Triangle
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+
+        for(int i = 0; i < numRows; i++){
+            List<Integer> row = new ArrayList<Integer>();
+            for(int j = 0; j <= i; j++){
+                row.add(1);
+                if(j == i) break;
+                if(j > 0 && j < i){
+                    int a = res.get(i - 1).get(j - 1);
+                    int b = res.get(i - 1).get(j);
+                    row.set(j, a + b );
+                }
+
+            }
+            res.add(row);
+        }
+        return res;
+    }
+}
+
+3)Next Permutation
+class Solution {
+    public void nextPermutation(int[] nums) {
+        int ind1=-1;
+        int ind2=-1;
+        // step 1 find breaking point 
+        for(int i=nums.length-2;i>=0;i--){
+            if(nums[i]<nums[i+1]){
+                ind1=i;
+                break;
+            }
+        }
+        // if there is no breaking  point 
+        if(ind1==-1){
+            reverse(nums,0);
+        }
+        
+        else{
+            // step 2 find next greater element and swap with ind2
+            for(int i=nums.length-1;i>=0;i--){
+                if(nums[i]>nums[ind1]){
+                    ind2=i;
+                    break;
+                }
+            }
+
+            swap(nums,ind1,ind2);
+            // step 3 reverse the rest right half
+            reverse(nums,ind1+1);
+        }
+    }
+    void swap(int[] nums,int i,int j){
+        int temp=nums[i];
+        nums[i]=nums[j];
+        nums[j]=temp;
+    }
+    void reverse(int[] nums,int start){
+        int i=start;
+        int j=nums.length-1;
+        while(i<j){
+            swap(nums,i,j);
+            i++;
+            j--;
+        }
+    }
+}
+
+4)Kadane's Algorithm
+class Solution {
+    public int maxSubArray(int[] nums) {
+        
+        int sum=nums[0];
+        int local=0;
+        for(int i=0;i<nums.length;i++){
+            local+=nums[i];
+            if(local>sum){
+                sum=local;
+            }
+            if(local<0){
+                local=0;
+            }
+        }
+        return sum;
+    }
+}
+
+5)Sort an array of 0's, 1's and 2's
+class Solution {
+    public void sortColors(int[] nums) {
+         int l=0;
+        int i=0;
+        int h=nums.length-1;
+        
+        while(i<=h){
+            if(nums[i]==0){
+                int temp=nums[i];
+                nums[i]=nums[l];
+                nums[l]=temp;
+                i++;
+                l++;
+            }
+            else if(nums[i]==2){
+                int temp=nums[i];
+                nums[i]=nums[h];
+                nums[h]=temp;
+                
+                h--;
+            }
+            else
+                i++;
+        }
+        
+    }
+}
+
+6)Stock Buy and Sell
+class Solution {
+    public int maxProfit(int[] prices) {
+        int min=Integer.MAX_VALUE;
+        int prof=0;
+        
+        for(int i=0;i<prices.length;i++){
+            
+            if(prices[i]<min){
+                min=prices[i];
+            }
+            else if(prices[i]-min>prof){
+                prof=prices[i]-min;
+            }
+        }
+        return prof;
+    }
+}
