@@ -1,0 +1,189 @@
+1)Search in a 2 D matrix
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int row=0;
+        while(!(matrix[row][0]<=target && matrix[row][matrix[0].length-1]>=target)){
+             if(row+1==matrix.length){
+                 return false;
+             }
+             else{
+                 row++;
+             }
+        }
+        int start=0;
+        int end=matrix[row].length;
+        while(start<=end){
+            int mid=(start+end)/2;
+            if(matrix[row][mid]==target){
+                return true;
+            }
+            else if(matrix[row][mid]>target){
+                end=mid-1;
+            }
+            else{
+                start=mid+1;
+            }
+        }
+        return false;
+    }
+}
+
+2)Pow(x, n)
+class Solution {
+    public double myPow(double x, int n) {
+        
+        if(n>=0)
+            return positive(x,n);
+        return negative(x,n);
+        
+    }
+    
+    public double negative(double x,int n){
+        if(n==-1)
+            return 1/x;
+        
+        double prevhalf=negative(x,n/2);
+        
+        if(n%2==0){
+            return prevhalf *prevhalf;
+        }
+        else
+       return (1/x)*prevhalf *prevhalf;
+    }
+    
+    
+    public double positive(double x,int n){
+        if(n==0)
+            return 1;
+        
+        double prevhalf=positive(x,n/2);
+        
+        if(n%2==0){
+            return prevhalf *prevhalf;
+        }
+        else
+       return prevhalf *prevhalf*x;
+    }
+}
+
+3)Majority Element (>n/2 times)
+class Solution {
+    public int majorityElement(int[] nums) {
+        
+        HashMap<Integer,Integer> map=new HashMap<>();
+        
+        for(int i=0;i<nums.length;i++){
+            
+            if(map.containsKey(nums[i])){
+                map.put(nums[i],map.get(nums[i])+1);
+            }
+            else{
+                map.put(nums[i],1);
+            }
+        }
+        int major=-1;
+        int n=nums.length;
+        Set<Integer> s=map.keySet();
+        for(Integer key:s){
+            if(map.get(key)>(n/2))
+                return key;
+        }
+        return major;
+    }
+} 
+
+4)Majority Element (n/3 times)
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+        
+         HashMap<Integer,Integer> map=new HashMap<>();
+        
+        for(int i=0;i<nums.length;i++){
+            
+            if(map.containsKey(nums[i])){
+                map.put(nums[i],map.get(nums[i])+1);
+            }
+            else{
+                map.put(nums[i],1);
+            }
+        }
+        List<Integer> l=new ArrayList<>();
+        int n=nums.length;
+        Set<Integer> s=map.keySet();
+        for(Integer key:s){
+            if(map.get(key)>(n/3))
+                l.add(key);
+        }
+        return l;
+        
+    }
+}
+
+5)Grid Unique Paths
+class Solution {
+    public int uniquePaths(int m, int n) {
+       int dp[][]=new int[m+1][n+1];
+      return helper(dp,0,0,m,n);
+    }
+    static int helper(int dp[][],int i,int j,int m,int n){
+         if(i>=m || j>=n){
+            return 0;
+         }
+        if(i==m-1 && j==n-1){
+            return 1;
+        }
+       
+        if(dp[i][j]!=0){
+            return dp[i][j];
+        }
+        int r=helper(dp,i+1,j,m,n);
+        int c=helper(dp,i,j+1,m,n);
+        return dp[i][j]=r+c;
+        
+    }
+}
+
+6)Reverse Pairs (Leetcode)
+class Solution {
+    int merge(int[] nums,int low,int mid, int high){
+        int count=0;
+        int j = mid+1;
+        for(int i=low;i<=mid;i++){
+            while(j<=high && nums[i]>(2*(long)nums[j])){
+                j++;
+            }count+=j-(mid+1);
+        }
+        ArrayList<Integer>arr=new ArrayList<>();
+        int left=low,right=mid+1;
+        while(left<=mid && right<=high){
+            if(nums[left]<=nums[right]){
+                arr.add(nums[left++]);
+            }else{
+                arr.add(nums[right++]);
+            }
+        }
+        while(left<=mid){
+                arr.add(nums[left++]);
+            }
+        while(right<=high){
+                arr.add(nums[right++]);
+            }
+        for(int i=low;i<=high;i++){
+            nums[i]=arr.get(i-low);
+        }
+        return count;
+    }
+    public int mergeSort(int []nums,int low,int high){
+        if(low>=high){
+            return 0;
+        }
+        int mid=(low+high)/2;
+        int inv=mergeSort(nums,low,mid);
+        inv+=mergeSort(nums,mid+1,high);
+        inv+=merge(nums,low,mid,high);
+        return inv;
+    }
+    public int reversePairs(int[]nums){
+        return mergeSort(nums,0,nums.length-1);
+    } 
+}
