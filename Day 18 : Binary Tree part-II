@@ -1,0 +1,280 @@
+1)Level order Traversal
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> ans=new ArrayList<>();
+        Queue<TreeNode> q=new LinkedList<>();
+        if(root==null)
+            return ans;
+        
+        q.add(root);
+        q.add(null);
+         List<Integer> l=new ArrayList<>();
+        while(!q.isEmpty()){
+            TreeNode curr=q.remove();
+            if(curr==null){
+                ans.add(new ArrayList<>(l));
+                l.clear();
+                if(q.isEmpty())
+                    break;
+                else
+                    q.add(null);
+            }
+            else{
+               l.add(curr.val);
+               
+                if(curr.left!=null){
+                    q.add(curr.left);
+                   
+                }
+                if(curr.right!=null){
+                    q.add(curr.right);
+                    
+                }
+                
+            }
+            
+        }
+        return ans;
+        
+    }
+}
+
+2)Height of a Binary Tree
+class Solution {
+    public int maxDepth(TreeNode root) {
+          if(root==null)
+            return 0;
+        int left=maxDepth(root.left);
+        int right=maxDepth(root.right);
+        int h=Math.max(left,right)+1;
+        return h;
+    }
+}
+
+3)Diameter of Binary Tree
+class Solution {
+    
+    public int diameterOfBinaryTree(TreeNode root) {  
+       
+        
+       return diameter(root)-1;
+    }
+    public int height(TreeNode root){
+        if(root==null)
+            return 0;
+        int left=height(root.left);
+        int right=height(root.right);
+        int h=Math.max(left,right)+1;
+        return h;
+    }
+
+    public int diameter(TreeNode root){
+        if(root==null)
+            return 0;
+        int left=diameter(root.left);
+        int right=diameter(root.right);
+        int h=height(root.left)+height(root.right)+1;
+        return Math.max(left,Math.max(right,h));
+
+
+    }
+}
+
+4)Check if the Binary tree is height-balanced or not
+class Solution {
+    boolean result=true;
+    public boolean isBalanced(TreeNode root) {
+       if(root==null)
+           return true;
+        
+        int check=height(root);
+      return result;
+    }
+    
+    public int height(TreeNode root){
+        if(root==null)
+            return 0;
+        int left=height(root.left);
+        int right= height(root.right);
+        
+        if(Math.abs(left-right)>1)   
+        {   result=false;
+            return -1;
+        }
+        return Math.max(left,right)+1;
+        
+    }
+}
+
+5)LCA in Binary Tree
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root==null)
+            return null;
+        if(root.val==p.val ||root.val==q.val)
+            return root;
+        TreeNode left=lowestCommonAncestor(root.left,p,q);
+        TreeNode right=lowestCommonAncestor(root.right,p,q);
+        
+        if(left!=null && right!=null)
+            return root;
+        return left!=null? left:right;
+        
+    }
+}
+
+6)Check if two trees are identical or not
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        return helper(p, q);
+    }
+
+    private boolean helper(TreeNode p, TreeNode q) {
+        if(p == null || q == null) return p == q;
+        return p.val == q.val && helper(p.left, q.left) && helper(p.right, q.right);
+    }
+}
+
+7)Zig Zag Traversal of Binary Tree
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+      
+        // Create a queue to store the tree nodes
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+
+        // Create an array list to store the final result
+        List<List<Integer>> wrapList = new ArrayList<>();
+     
+        // If the root node is null, return an empty list
+        if(root == null){
+            return wrapList;
+        }
+     
+        // Add the root node to the queue
+        queue.add(root);
+     
+        // Set the flag to true for left to right traversal
+        boolean flag = true;
+     
+        // Traverse the tree level by level
+        while(!queue.isEmpty()){
+            
+            // Get the number of nodes at the current level
+            int size = queue.size();
+
+            // Create an array list to store the nodes' values at the current level
+            List<Integer> subList = new ArrayList<>();
+         
+            // Traverse the nodes at the current level
+            for(int i =0; i < size; i++){
+
+                // Check the left and right child of the current node and add them to the queue if they are not null
+                if(queue.peek().left != null){
+                    queue.add(queue.peek().left);
+                }
+                if(queue.peek().right != null){
+                    queue.add(queue.peek().right);
+                }
+
+                // For left to right traversal
+                if(flag == true){
+                    // Add the node's value to the end of the subList
+                    subList.add(queue.poll().val);
+                }
+                // For right to left traversal
+                else{
+                    // Add the node's value to the beginning of the subList
+                    subList.add(0,queue.poll().val);
+                }
+            }
+            // Toggle the flag to switch between left to right and right to left traversal
+            flag = !flag;
+         
+            // Add the subList to the wrapList
+            wrapList.add(subList);
+        }
+        // Return the final result
+        return wrapList;
+    }
+}
+
+8)Boundary Traversal of Binary Tree
+import java.util.*;
+class Node {
+    int data;
+    Node left, right;
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+public class Main {
+    static Boolean isLeaf(Node root) {
+        return (root.left == null) && (root.right == null);
+    }
+
+    static void addLeftBoundary(Node root, ArrayList < Integer > res) {
+        Node cur = root.left;
+        while (cur != null) {
+            if (isLeaf(cur) == false) res.add(cur.data);
+            if (cur.left != null) cur = cur.left;
+            else cur = cur.right;
+        }
+    }
+    static void addRightBoundary(Node root, ArrayList < Integer > res) {
+        Node cur = root.right;
+        ArrayList < Integer > tmp = new ArrayList < Integer > ();
+        while (cur != null) {
+            if (isLeaf(cur) == false) tmp.add(cur.data);
+            if (cur.right != null) cur = cur.right;
+            else cur = cur.left;
+        }
+        int i;
+        for (i = tmp.size() - 1; i >= 0; --i) {
+            res.add(tmp.get(i));
+        }
+    }
+
+    static void addLeaves(Node root, ArrayList < Integer > res) {
+        if (isLeaf(root)) {
+            res.add(root.data);
+            return;
+        }
+        if (root.left != null) addLeaves(root.left, res);
+        if (root.right != null) addLeaves(root.right, res);
+    }
+    static ArrayList < Integer > printBoundary(Node node) {
+        ArrayList < Integer > ans = new ArrayList < Integer > ();
+        if (isLeaf(node) == false) ans.add(node.data);
+        addLeftBoundary(node, ans);
+        addLeaves(node, ans);
+        addRightBoundary(node, ans);
+        return ans;
+    }
+
+    public static void main(String args[]) {
+
+        Node root = new Node(1);
+        root.left = new Node(2);
+        root.left.left = new Node(3);
+        root.left.left.right = new Node(4);
+        root.left.left.right.left = new Node(5);
+        root.left.left.right.right = new Node(6);
+        root.right = new Node(7);
+        root.right.right = new Node(8);
+        root.right.right.left = new Node(9);
+        root.right.right.left.left = new Node(10);
+        root.right.right.left.right = new Node(11);
+
+        ArrayList < Integer > boundaryTraversal;
+        boundaryTraversal = printBoundary(root);
+
+        System.out.println("The Boundary Traversal is : ");
+        for (int i = 0; i < boundaryTraversal.size(); i++) {
+            System.out.print(boundaryTraversal.get(i) + " ");
+        }
+
+    }
+}
+
