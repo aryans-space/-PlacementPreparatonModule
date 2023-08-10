@@ -1,0 +1,206 @@
+1)Maximum path sum
+class Solution {
+
+    public static int maxPathSum(Node root) {
+        int maxValue[] = new int[1];
+        maxValue[0] = Integer.MIN_VALUE;
+        maxPathDown(root, maxValue);
+        return maxValue[0];
+    }
+
+    public static int maxPathDown(Node node, int maxValue[]) {
+        if (node == null) return 0;
+        int left = Math.max(0, maxPathDown(node.left, maxValue));
+        int right = Math.max(0, maxPathDown(node.right, maxValue));
+        maxValue[0] = Math.max(maxValue[0], left + right + node.val);
+        return Math.max(left, right) + node.val;
+    }
+
+    public static void main(String args[]) {
+
+        Node root = new Node(-10);
+        root.left = new Node(9);
+        root.right = new Node(20);
+        root.right.left = new Node(15);
+        root.right.right = new Node(7);
+
+        int answer = maxPathSum(root);
+        System.out.println("The Max Path Sum for this tree is " + answer);
+
+    }
+}
+
+2)Construct A Binary Tree from Inorder and Preorder Traversal
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int len=inorder.length;
+        return build(inorder,preorder,0,len-1,0,len-1);
+        
+    }
+    
+    public TreeNode build(int[] in,int[] pre,int instart,int inend,int prestart,int preend){
+        if(instart>inend)
+            return null;
+        
+        int rootval=pre[prestart];
+        int rootindex=instart;
+        for(;rootindex<inend;rootindex++){
+            if(in[rootindex]==rootval)
+                break;
+        }
+        
+        TreeNode root=new TreeNode(rootval);
+        int ls=rootindex-instart;
+        int rs=inend-rootindex;
+        root.left=build(in,pre,instart,rootindex-1,prestart+1,prestart+ls);
+        root.right=build(in,pre,rootindex+1,inend,preend-rs+1,preend);
+        return root;
+    }
+}
+
+
+3)Construct Binary Tree from Inorder and Postorder Traversal
+
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        int len=inorder.length;
+        return build(inorder,postorder,0,len-1,0,len-1);
+        
+    }
+    
+    
+    public TreeNode build(int[] in, int[] pos,int instart,int inend,int poststart,int postend){
+        if(instart>inend)
+            return null;
+        
+        int rootval=pos[postend];
+        int rootindex=instart;
+        for(;rootindex<=inend;rootindex++){
+            if(in[rootindex]==rootval)
+                break;
+        }
+        int leftreesize=rootindex-instart;
+        int rightreesize=inend-rootindex;
+        TreeNode root=new TreeNode(rootval);
+        
+        root.left=build(in,pos,instart,rootindex-1,poststart,poststart+leftreesize-1);
+        root.right=build(in,pos,rootindex+1,inend,postend-rightreesize,postend-1);
+        return root;
+        
+        
+        
+    }
+}
+
+
+4)Check for Symmetrical Binary Tree
+
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if(root==null)
+            return true;
+        return sym(root.left,root.right);
+    }
+    
+    public boolean sym(TreeNode left,TreeNode right){
+        if(left==null || right==null)
+            return left==right;
+        
+        if(left.val!=right.val)
+            return false;
+        
+        return sym(left.left,right.right) && sym(left.right,right.left);
+        
+    }
+}
+
+
+5)	Flatten Binary Tree to LinkedList
+
+public class Solution {
+  static Node prev = null;
+    static void flatten(Node  root) {
+      if (root == null) return;
+
+      flatten(root . right);
+      flatten(root . left);
+
+      root . right = prev;
+      root . left = null;
+      prev = root;
+    }
+
+
+public static void main(String args[]) {
+
+  Node  root = new Node(1);
+  root . left = new Node(2);
+  root . left . left = new Node(3);
+  root . left . right = new Node(4);
+  root . right = new Node(5);
+  root . right . right = new Node(6);
+  root . right . right . left = new Node(7);
+  flatten(root);
+  while(root.right!=null)
+  {
+      System.out.print(root.data+"->");
+      root=root.right;
+  }
+System.out.print(root.data);
+}
+}
+
+
+6)Mirror Tree
+
+class Solution {
+    
+     Node invertTree(Node root) {
+        if(root==null)
+            return null;
+        Node temp=root.left;
+        root.left=invertTree(root.right);
+        root.right=invertTree(temp);
+        
+        return root;
+    }
+     
+    // Function to convert a binary tree into its mirror tree.
+    void mirror(Node root) {
+        // Your code here
+        if(root==null)
+            return;
+        Node r1=invertTree(root); 
+       
+    }
+}
+
+
+7)Check for Children Sum Property
+class Solution{
+static void reorder(Node  root) {
+  if (root == null) return;
+  int child = 0;
+  if (root . left!=null) {
+    child += root . left . data;
+  }
+  if (root . right!=null) {
+    child += root . right . data;
+  }
+
+  if (child < root . data) {
+    if (root . left!=null) root . left . data = root . data;
+    else if (root . right!=null) root . right . data = root . data;
+  }
+
+  reorder(root . left);
+  reorder(root . right);
+
+  int tot = 0;
+  if (root . left!=null) tot += root . left . data;
+  if (root . right!=null) tot += root . right . data;
+  if (root . left!=null || root . right!=null) root . data = tot;
+}
+static void changeTree(Node  root) {
+  reorder(root);
+}
