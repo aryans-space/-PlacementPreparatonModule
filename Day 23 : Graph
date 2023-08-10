@@ -1,0 +1,616 @@
+1)Clone a graph
+class Solution {
+    public void dfs(Node node, HashMap<Node, Node> dict)
+    {
+        for (Node nd : node.neighbors) {
+            if (!dict.containsKey(nd))
+                dict.put(nd, new Node(nd.val));
+            dict.get(node).neighbors.add(dict.get(nd));
+        }
+        for (Node nd : node.neighbors)
+        {
+            if (dict.get(nd).neighbors.size() == 0)
+                dfs(nd, dict);
+        }
+    }
+    public Node cloneGraph(Node node) {
+        HashMap<Node, Node> dict = new HashMap<>();
+        if (node != null) {
+            dict.put(node, new Node(node.val));
+            dfs(node, dict);
+            return dict.get(node);
+        }
+        return null;
+    }
+}
+
+2)	DFS
+
+class Solution {
+    // Function to return a list containing the DFS traversal of the graph.
+   public ArrayList<Integer> dfsOfGraph(int v, ArrayList<ArrayList<Integer>> adj){
+        boolean[] vis = new boolean[v+1];
+        ArrayList<Integer> ans = new ArrayList<>();
+        solve(ans,adj,vis,0);
+        return ans;
+    }
+
+    private void solve(ArrayList<Integer> ans, ArrayList<ArrayList<Integer>> adj, boolean[] vis, int i) {
+        ans.add(i);
+        vis[i] = true;
+        for(int it: adj.get(i)){
+            if(!vis[it]){
+                solve(ans,adj,vis,it);
+            }
+        }
+    }
+}
+
+3)BFS
+class Solution {
+    // Function to return Breadth First Traversal of given graph.
+    public ArrayList<Integer> bfsOfGraph(int V, ArrayList<ArrayList<Integer>> adj) {
+        // Initialize a queue to perform BFS
+        Queue<Integer> queue = new LinkedList<>();
+        // Mark the 0th vertex as visited and enqueue it
+        boolean[] visited = new boolean[V];
+        queue.add(0);
+        visited[0] = true;
+
+        // Result list to store the BFS traversal
+        ArrayList<Integer> result = new ArrayList<>();
+
+        // Perform BFS
+        while (!queue.isEmpty()) {
+            // Dequeue a vertex from the front of the queue
+            int currentVertex = queue.poll();
+            // Add it to the result list
+            result.add(currentVertex);
+
+            // Enqueue all adjacent vertices of the current vertex that are not visited yet
+            for (int neighbor : adj.get(currentVertex)) {
+                if (!visited[neighbor]) {
+                    queue.add(neighbor);
+                    visited[neighbor] = true;
+                }
+            }
+        }
+
+        return result;
+    }
+}
+
+
+4)Detect A cycle in Undirected Graph using BFS
+
+class Solution
+{
+   static boolean checkForCycle(ArrayList<ArrayList<Integer>> adj, int s,
+            boolean vis[], int parent[])
+    {
+       Queue<Node> q =  new LinkedList<>(); //BFS
+       q.add(new Node(s, -1));
+       vis[s] =true;
+       
+       // until the queue is empty
+       while(!q.isEmpty())
+       {
+           // source node and its parent node
+           int node = q.peek().first;
+           int par = q.peek().second;
+           q.remove(); 
+           
+           // go to all the adjacent nodes
+           for(Integer it: adj.get(node))
+           {
+               if(vis[it]==false)  
+               {
+                   q.add(new Node(it, node));
+                   vis[it] = true; 
+               }
+        
+                // if adjacent node is visited and is not its own parent node
+               else if(par != it) return true;
+           }
+       }
+       
+       return false;
+    }
+    
+    // function to detect cycle in an undirected graph
+    public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj)
+    {
+        boolean vis[] = new boolean[V];
+        Arrays.fill(vis,false);
+        int parent[] = new int[V];
+        Arrays.fill(parent,-1);  
+        
+        for(int i=0;i<V;i++)
+            if(vis[i]==false) 
+                if(checkForCycle(adj, i,vis, parent)) 
+                    return true;
+    
+        return false;
+    }
+    
+    
+}
+
+
+5)Detect A cycle in Undirected Graph using DFS
+class Solution {
+    private boolean dfs(int node, int parent, int vis[], ArrayList<ArrayList<Integer>> 
+    adj) {
+        vis[node] = 1; 
+        // go to all adjacent nodes
+        for(int adjacentNode: adj.get(node)) {
+            if(vis[adjacentNode]==0) {
+                if(dfs(adjacentNode, node, vis, adj) == true) 
+                    return true; 
+            }
+            // if adjacent node is visited and is not its own parent node
+            else if(adjacentNode != parent) return true; 
+        }
+        return false; 
+    }
+    // Function to detect cycle in an undirected graph.
+    public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj) {
+       int vis[] = new int[V]; 
+       for(int i = 0;i<V;i++) {
+           if(vis[i] == 0) {
+               if(dfs(i, -1, vis, adj) == true) return true; 
+           }
+       }
+       return false; 
+    }
+}
+
+6)Detect A cycle in a Directed Graph using DfS
+
+class Solution {
+    public boolean isCyclic(int N, ArrayList<ArrayList<Integer>> adj) {
+        // int topo[] = new int[N];
+        int indegree[] = new int[N];
+        for (int i = 0; i < N; i++) {
+            for (Integer it : adj.get(i)) {
+                indegree[it]++;
+            }
+        }
+
+        Queue<Integer> q = new LinkedList<Integer>();
+        for (int i = 0; i < N; i++) {
+            if (indegree[i] == 0) {
+                q.add(i);
+            }
+        }
+        int cnt = 0;
+        while (!q.isEmpty()) {
+            Integer node = q.poll();
+            cnt++;
+            for (Integer it : adj.get(node)) {
+                indegree[it]--;
+                if (indegree[it] == 0) {
+                    q.add(it);
+                }
+            }
+        }
+        if (cnt == N)
+            return false;
+        return true;
+    }
+}
+
+7)Detect A cycle in a Directed Graph using BFS
+
+public class Solution {
+
+  public static boolean detectCycleInDirectedGraph(int n, ArrayList < ArrayList < Integer >> edges) {
+
+    // Write your code here.
+
+    
+
+    
+
+        ArrayList<ArrayList<Integer>> graph=new ArrayList<>();
+
+ 
+
+        for(int i=0;i<=n;i++)
+
+        {
+
+            graph.add(new ArrayList<Integer>());
+
+        }
+
+ 
+
+        for(int i=0;i<edges.size();i++)
+
+        {
+
+ 
+
+           
+
+ 
+
+               graph.get(edges.get(i).get(0)).add(edges.get(i).get(1));
+
+              // graph.get(edges).add(edges[i][1]);
+
+ 
+
+        }
+
+ 
+
+        int ind[]=new int[n+1];
+
+ 
+
+        Arrays.fill(ind,0);
+
+ 
+
+        for(int i=1;i<=n;i++)
+
+        {
+
+            for(int j:graph.get(i))
+
+            {
+
+                ind[j]++;
+
+            }
+
+        }
+
+ 
+
+        
+
+      //  ArrayList<Integer> ans=new ArrayList<>();
+
+ 
+
+      int count=0;
+
+        Queue<Integer> q=new LinkedList<>();
+
+ 
+
+        for(int i=1;i<=n;i++)
+
+        {
+
+            if(ind[i]==0)
+
+            {
+
+                   q.add(i);
+
+            }
+
+        }
+
+ 
+
+        while(!q.isEmpty())
+
+        {
+
+ 
+
+            int front=q.poll();
+
+ 
+
+            //ans.add(front);
+
+            count++;
+
+ 
+
+            for(int i:graph.get(front))
+
+            {
+
+                ind[i]--;
+
+ 
+
+                if(ind[i]==0)
+
+                {
+
+                    q.add(i);
+
+ 
+
+                }
+
+ 
+
+            }
+
+ 
+
+    
+
+        }
+
+        //return ans;
+
+ 
+
+        if(count!=n)
+
+        {
+
+          return true;
+
+        }
+
+ 
+
+        else{
+
+          return false;
+
+        }
+  }
+
+}
+
+8)Topological Sort BFS
+ class Solution
+    {
+            public boolean isCyclic(int N, ArrayList<ArrayList<Integer>> adj) {
+                int topo[] = new int[N];
+                int indegree[] = new int[N];
+                
+                //finding indegree
+                for(int i = 0;i<N;i++) {
+                    for(Integer it: adj.get(i)) {
+                        indegree[it]++;
+                    }
+                }
+                
+                
+                Queue<Integer> q = new LinkedList<Integer>();
+                for(int i = 0;i<N;i++) {
+                    //adding nodes to queue with indegree = 0
+                    if(indegree[i] == 0) {
+                        q.add(i);
+                    }
+                }
+                
+                int cnt = 0;
+                int ind=0;
+                
+                while(!q.isEmpty()) {
+                    Integer node = q.poll();
+                    topo[ind++] = node;
+                    cnt++;
+                    //getting neighbour nodes of popped node and decreasing  their 
+                    indegree by1
+                    for(Integer it: adj.get(node)) {
+                        indegree[it]--;
+                        if(indegree[it] == 0) {
+                            q.add(it);
+                        }
+                    }
+                }
+                 //printing topological ordering of nodes
+                for (int i=0;i< topo.length;i++){
+                    System.out.print(topo[i]+" ");
+                }
+                if(cnt == N) return false;
+                return true;
+            }
+        }
+
+9)Topological Sort DFS
+
+class Solution {
+    static void findTopoSort(int node, int vis[], ArrayList<ArrayList<Integer>> adj, Stack<Integer> st) {
+        vis[node] = 1; 
+        for(Integer it: adj.get(node)) {
+            if(vis[it] == 0) {
+                findTopoSort(it, vis, adj, st); 
+            } 
+        }
+        st.push(node); 
+    }
+    static int[] topoSort(int N, ArrayList<ArrayList<Integer>> adj) {
+        Stack<Integer> st = new Stack<Integer>(); 
+        int vis[] = new int[N]; 
+        
+        for(int i = 0;i<N;i++) {
+            if(vis[i] == 0) {
+                findTopoSort(i, vis, adj, st);
+            }
+        }
+        
+        int topo[] = new int[N];
+        int ind = 0; 
+        while(!st.isEmpty()) {
+            topo[ind++] = st.pop();
+        }
+        // for(int i = 0;i<N;i++) System.out.println(topo[i] + " "); 
+        return topo; 
+    }
+}
+
+10)Number of islands
+class Solution {
+  private void dfs(int row, int col, int[][] vis,
+    int[][] grid, ArrayList < String > vec, int row0, int col0) {
+    // mark the cell as visited
+    vis[row][col] = 1;
+
+    // coordinates - base coordinates
+    vec.add(toString(row - row0, col - col0));
+    int n = grid.length;
+    int m = grid[0].length;
+
+    // delta row and delta column
+     int delrow[] = {-1, 0, +1, 0}; 
+     int delcol[] = {0, -1, 0, +1}; 
+
+    // traverse all 4 neighbours
+    for (int i = 0; i < 4; i++) {
+      int nrow = row + delrow[i];
+      int ncol = col + delcol[i];
+      // check for valid unvisited land neighbour coordinates
+      if (nrow >= 0 && nrow < n && ncol >= 0 && ncol < m &&
+        vis[nrow][ncol] == 0 && grid[nrow][ncol] == 1) {
+        dfs(nrow, ncol, vis, grid, vec, row0, col0);
+      }
+    }
+  }
+  private String toString(int r, int c) {
+    return Integer.toString(r) + " " + Integer.toString(c);
+  }
+
+  int countDistinctIslands(int[][] grid) {
+    int n = grid.length;
+    int m = grid[0].length;
+    int vis[][] = new int[n][m];
+    HashSet < ArrayList < String >> st = new HashSet < > ();
+
+    // traverse the grid
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        // if not visited and is a land cell
+        if (vis[i][j] == 0 && grid[i][j] == 1) {
+          ArrayList < String > vec = new ArrayList < > ();
+          dfs(i, j, vis, grid, vec, i, j);
+          // store it in HashSet
+          st.add(vec);
+        }
+      }
+    }
+    return st.size();
+  }
+class Pair {
+  int first;
+  int second;
+  public Pair(int first, int second) {
+    this.first = first;
+    this.second = second;
+  }
+}
+
+11)	Bipartite Check using BFS
+
+public class Solution {
+
+    static boolean bfs(int node,int m,ArrayList<ArrayList<Integer>> adj,int[] color){
+        Queue<Integer> q=new LinkedList<>();
+        q.add(node);
+        color[node]=0;
+        while(!q.isEmpty()){
+            Integer n=q.remove();
+            for(Integer i:adj.get(n)){
+                if(color[i]==-1){
+                    color[i]=1-color[n];
+                    q.add(i);
+                }
+                else if(color[i]==color[n]){
+                     return false;
+                }
+               
+            }
+        }
+        return true;
+    }
+
+    public static boolean isGraphBirpatite(ArrayList<ArrayList<Integer>> edges) {
+
+        // Write your code here
+        ArrayList<ArrayList<Integer>> adj=new ArrayList<ArrayList<Integer>>();
+        int n=edges.size();
+        
+        for(int i=0;i<n;i++){
+            adj.add(new ArrayList<Integer>());
+        }
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(edges.get(i).get(j)==1 && i!=j)
+                adj.get(i).add(j);
+                adj.get(j).add(i);
+            }
+        }
+
+        int[] color=new int[n];
+        for(int i=0;i<n;i++) color[i]=-1;
+
+        for(int i=0;i<n;i++){
+            if(color[i]==-1){
+                if(bfs(i,n,adj,color)==false)
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+12)Bipartite Check using DFS
+
+public class Solution {
+
+    static boolean bfs(int node,int m,ArrayList<ArrayList<Integer>> adj,int[] color){
+        Queue<Integer> q=new LinkedList<>();
+        q.add(node);
+        color[node]=0;
+        while(!q.isEmpty()){
+            Integer n=q.remove();
+            for(Integer i:adj.get(n)){
+                if(color[i]==-1){
+                    color[i]=1-color[n];
+                    q.add(i);
+                }
+                else if(color[i]==color[n]){
+                     return false;
+                }
+               
+            }
+        }
+        return true;
+    }
+
+    public static boolean isGraphBirpatite(ArrayList<ArrayList<Integer>> edges) {
+
+        // Write your code here
+        ArrayList<ArrayList<Integer>> adj=new ArrayList<ArrayList<Integer>>();
+        int n=edges.size();
+        
+        for(int i=0;i<n;i++){
+            adj.add(new ArrayList<Integer>());
+        }
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(edges.get(i).get(j)==1 && i!=j)
+                adj.get(i).add(j);
+                adj.get(j).add(i);
+            }
+        }
+
+        int[] color=new int[n];
+        for(int i=0;i<n;i++) color[i]=-1;
+
+        for(int i=0;i<n;i++){
+            if(color[i]==-1){
+                if(bfs(i,n,adj,color)==false)
+                return false;
+            }
+        }
+        return true;
+    }
+}
