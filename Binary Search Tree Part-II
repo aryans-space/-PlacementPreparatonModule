@@ -1,0 +1,254 @@
+1)Floor in a BST
+
+public class Solution {
+
+ 
+
+    public static int floorInBST(TreeNode<Integer> root, int x) {
+
+       int maxi = Integer.MIN_VALUE;
+
+       while(root!=null){
+
+           if(root.data==x) return x;
+
+           if(root.data>x) root=root.left;
+
+           else if(root.data<x){
+
+               maxi = Math.max(maxi,root.data);
+
+               root=root.right;
+
+           }
+
+       }
+
+       return maxi;
+
+    }
+
+}
+
+2)Ceil in a BST
+
+public class Solution {
+
+    public  static int findCeil(TreeNode<Integer> node, int x) {
+        int ceil = -1;
+        while(node!=null){
+            if(node.data == x){
+                ceil = node.data;
+                return ceil;
+            }
+            else if(node.data > x){
+                ceil = node.data;
+                node = node.left;
+            }
+            else if(node.data < x)
+            {
+                node = node.right;
+            }
+        }
+        
+        return ceil;
+    }
+}
+
+3)Find K-th smallest element in BST
+
+class Solution {
+    
+    
+
+public int kthSmallest(TreeNode root, int k) {
+        PriorityQueue<Integer> queue = new PriorityQueue<Integer>();
+        traverseTree(root,queue);
+        for(int i=1;i<k;i++){
+            queue.poll();
+        }
+        return queue.peek();
+    }
+    
+    public void traverseTree(TreeNode root, PriorityQueue<Integer> queue){
+        if(root == null) return ;
+        traverseTree(root.left,queue);
+        queue.add(root.val);
+        traverseTree(root.right,queue);
+    }
+}
+
+
+4)Find K-th largest element in BST
+class Solution {
+    
+    
+
+public int kthSmallest(TreeNode root, int k) {
+        PriorityQueue<Integer> queue = new PriorityQueue<Integer>(Collections.reverseOrder());
+        traverseTree(root,queue);
+        for(int i=1;i<k;i++){
+            queue.poll();
+        }
+        return queue.peek();
+    }
+    
+    public void traverseTree(TreeNode root, PriorityQueue<Integer> queue){
+        if(root == null) return ;
+        traverseTree(root.left,queue);
+        queue.add(root.data);
+        traverseTree(root.right,queue);
+    }
+}
+
+5)Find a pair with a given sum in BST
+
+class Solution {
+    public boolean findTarget(TreeNode root, int k) {
+        if (root == null) return false;
+        List<Integer> list = new ArrayList<>();
+        inorder(root, list);
+        int i = 0, j = list.size() - 1;
+        while (i < j) {
+            int sum = list.get(i) + list.get(j);
+            if (sum == k) return true;
+            else if (sum < k) i++;
+            else j--;
+        }
+        return false;
+    }
+    
+    private void inorder(TreeNode root, List<Integer> list) {
+        if (root == null) return;
+        inorder(root.left, list);
+        list.add(root.val);
+        inorder(root.right, list);
+    }
+}
+
+6)BST iterator
+
+class BSTIterator {
+    List<Integer> list;
+    int next = 0; //initial index;
+
+    public BSTIterator(TreeNode root) {
+        this.list = new ArrayList<>();
+        
+        dfs(root); //collect all the values to the given list using in-order traversal of tree
+    }
+    
+    public int next() {
+        return  list.get(next++);
+    }
+    
+    public boolean hasNext() {
+        return list.size() > next;
+    }
+   
+    private void dfs(TreeNode root) {
+        if(root == null) {
+            return;
+        }
+        dfs(root.left);
+        list.add(root.val);
+        dfs(root.right);
+    }
+}
+
+7)Size of the largest BST in a Binary Tree
+
+class Solution {
+    
+    int maxSum = 0;
+    
+    public int maxSumBST(TreeNode root) {
+        findMaxSum(root);
+        return maxSum;
+    }
+    
+    private NodeWrapper findMaxSum(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        
+        NodeWrapper leftTree = findMaxSum(root.left);
+        NodeWrapper rightTree = findMaxSum(root.right);
+        
+        NodeWrapper curNode = new NodeWrapper(root);
+        if (leftTree != null) {
+            curNode.sum += leftTree.sum;
+            curNode.max = Math.max(root.val, leftTree.max);
+            curNode.min = Math.min(root.val, leftTree.min);
+            curNode.validBST = leftTree.validBST && leftTree.max < root.val;
+        }
+        if (rightTree != null) {
+            curNode.sum += rightTree.sum;
+            curNode.max = Math.max(curNode.max, rightTree.max);
+            curNode.min = Math.min(curNode.min, rightTree.min);
+            curNode.validBST &= rightTree.validBST && rightTree.min > root.val;
+        }
+
+        if (curNode.validBST) {
+            maxSum = Math.max(maxSum, curNode.sum);   
+        }
+        return curNode;
+    }
+        
+    static class NodeWrapper {
+        final TreeNode node;
+        int sum;
+        int max;
+        int min;
+        boolean validBST = true;
+        public NodeWrapper(TreeNode node) {
+            this.node = node;
+            this.sum = node.val;
+            this.max = node.val;
+            this.min = node.val;
+        }
+    }
+}
+
+8)Serialize and deserialize Binary Tree
+
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root==null)
+            return "X";
+        String left=serialize(root.left);
+        String right=serialize(root.right);
+        
+        return root.val+","+left+","+right;
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.equals("X"))
+            return null;
+        String[] arr=data.split(",");
+        Queue<String> q=new LinkedList<>();
+        for(int i=0;i<arr.length;i++)
+            q.add(arr[i]);
+        return des(q);
+        
+    }
+    
+    public TreeNode des(Queue<String> q){
+        if(q.isEmpty())
+            return null;
+        String s=q.poll();
+        if(s.equals("X"))
+            return null;
+        TreeNode node=new TreeNode(Integer.parseInt(s));
+        node.left=des(q);
+        node.right=des(q);
+        return node;
+           
+                    
+                
+        
+    }
+}
